@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CollegeAlert.MainPage"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{AppThemeBinding Light=#EEF5FF, Dark=#07101F}">
+
+    <Grid RowDefinitions="Auto,*"
+          Padding="18,16,18,0"
+          RowSpacing="12">
+
+        <Grid ColumnDefinitions="Auto,*,Auto"
+              ColumnSpacing="12">
+            <Border WidthRequest="60"
+                    HeightRequest="60"
+                    StrokeThickness="1"
+                    Stroke="{AppThemeBinding Light=#CFE0FF, Dark=#213A66}"
+                    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#101C31}">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20" />
+                </Border.StrokeShape>
+                <Image Source="college_logo.png"
+                       WidthRequest="42"
+                       HeightRequest="42"
+                       Aspect="AspectFit"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+            </Border>
+
+            <VerticalStackLayout Grid.Column="1"
+                                 Spacing="1"
+                                 VerticalOptions="Center">
+                <Label Text="eБезпека"
+                       FontAttributes="Bold"
+                       FontSize="28"
+                       TextColor="{AppThemeBinding Light=#101A2E, Dark=#F5F8FF}" />
+                <Label x:Name="HeaderSubtitle"
+                       Text="Немає активних тривог"
+                       FontSize="13"
+                       TextColor="{AppThemeBinding Light=#61708B, Dark=#A8B7D3}" />
+            </VerticalStackLayout>
+
+            <Button Grid.Column="2"
+                    x:Name="ThemeButton"
+                    Text="Авто"
+                    Clicked="OnThemeClicked"
+                    HeightRequest="44"
+                    MinimumWidthRequest="64"
+                    CornerRadius="22"
+                    Padding="14,0"
+                    FontAttributes="Bold"
+                    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#10213A}"
+                    BorderColor="{AppThemeBinding Light=#D7E4FA, Dark=#28466F}"
+                    BorderWidth="1"
+                    TextColor="{AppThemeBinding Light=#2257B8, Dark=#8EB9FF}" />
+        </Grid>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="14"
+                                 Padding="0,0,0,24">
+                <Grid ColumnDefinitions="*,*"
+                      Padding="4"
+                      BackgroundColor="{AppThemeBinding Light=#DDEAFF, Dark=#0E1A2D}">
+                    <Grid.Clip>
+                        <RoundRectangleGeometry CornerRadius="24"
+                                                Rect="0,0,500,56" />
+                    </Grid.Clip>
+                    <Button x:Name="StudentRoleButton"
+                            Text="Студент"
+                            Clicked="OnStudentRoleClicked"
+                            HeightRequest="48"
+                            CornerRadius="20"
+                            FontAttributes="Bold"
+                            BackgroundColor="#2F67D8"
+                            TextColor="#FFFFFF" />
+                    <Button x:Name="AdminRoleButton"
+                            Grid.Column="1"
+                            Text="Адміністрація"
+                            Clicked="OnAdminRoleClicked"
+                            HeightRequest="48"
+                            CornerRadius="20"
+                            FontAttributes="Bold"
+                            BackgroundColor="Transparent"
+                            TextColor="{AppThemeBinding Light=#38506F, Dark=#A8B7D3}" />
+                </Grid>
+
+                <Border Padding="18"
+                        StrokeThickness="1"
+                        Stroke="{AppThemeBinding Light=#FFFFFF, Dark=#223858}"
+                        BackgroundColor="{AppThemeBinding Light=#EFFFFFFF, Dark=#B00B182C}">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="28" />
+                    </Border.StrokeShape>
+                    <Grid RowDefinitions="Auto,Auto,Auto"
+                          RowSpacing="18">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <VerticalStackLayout Spacing="4">
+                                <Label x:Name="ModeTitle"
+                                       Text="Режим спостереження"
+                                       FontSize="22"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#101A2E, Dark=#F5F8FF}" />
+                                <Label x:Name="ModeSubtitle"
+                                       Text="Корпус Б - 3 поверх"
+                                       FontSize="14"
+                                       TextColor="{AppThemeBinding Light=#61708B, Dark=#A8B7D3}" />
+                            </VerticalStackLayout>
+                            <Border Grid.Column="1"
+                                    WidthRequest="58"
+                                    HeightRequest="58"
+                                    StrokeThickness="0"
+                                    BackgroundColor="{AppThemeBinding Light=#EEF5FF, Dark=#10213A}">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="20" />
+                                </Border.StrokeShape>
+                                <Label x:Name="ModeBadge"
+                                       Text="OK"
+                                       FontAttributes="Bold"
+                                       FontSize="15"
+                                       TextColor="{AppThemeBinding Light=#2F67D8, Dark=#8EB9FF}"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center" />
+                            </Border>
+                        </Grid>
+
+                        <Grid Grid.Row="1"
+                              HeightRequest="310">
+                            <Border WidthRequest="286"
+                                    HeightRequest="286"
+                                    StrokeThickness="1"
+                                    Stroke="{AppThemeBinding Light=#DCE8FA, Dark=#203753}"
+                                    BackgroundColor="{AppThemeBinding Light=#80FFFFFF, Dark=#70101C31}"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="143" />
+                                </Border.StrokeShape>
+                            </Border>
+
+                            <Border x:Name="HoldProgress"
+                                    WidthRequest="286"
+                                    HeightRequest="286"
+                                    Stroke="#FF4A4A"
+                                    StrokeThickness="7"
+                                    Opacity="0"
+                                    BackgroundColor="#00FFFFFF"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"
+                                    Rotation="-90">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="143" />
+                                </Border.StrokeShape>
+                            </Border>
+
+                            <Button x:Name="AlarmButton"
+                                    WidthRequest="226"
+                                    HeightRequest="226"
+                                    CornerRadius="113"
+                                    Pressed="OnAlarmPressed"
+                                    Released="OnAlarmReleased"
+                                    Text="ТРИВОГА&#10;Утримуйте 3 секунди"
+                                    FontSize="20"
+                                    FontAttributes="Bold"
+                                    TextColor="#FFFFFF"
+                                    BackgroundColor="#E94040"
+                                    Shadow="{Shadow Brush=#55333333, Offset='0,14', Radius=24, Opacity=0.35}" />
+                        </Grid>
+
+                        <VerticalStackLayout Grid.Row="2"
+                                             Spacing="8">
+                            <Label x:Name="PrimaryStatusLabel"
+                                   Text="Зараз активних тривог немає"
+                                   FontSize="17"
+                                   FontAttributes="Bold"
+                                   HorizontalTextAlignment="Center"
+                                   TextColor="{AppThemeBinding Light=#18233A, Dark=#F5F8FF}" />
+                            <Label x:Name="SecondaryStatusLabel"
+                                   Text="Система готова до тихого екстреного сповіщення"
+                                   FontSize="13"
+                                   HorizontalTextAlignment="Center"
+                                   TextColor="{AppThemeBinding Light=#66758F, Dark=#A8B7D3}" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+
+                <VerticalStackLayout x:Name="StudentPanel"
+                                     Spacing="12">
+                    <Label Text="Швидкий статус"
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=#18233A, Dark=#F5F8FF}" />
+                    <Grid RowDefinitions="Auto,Auto"
+                          ColumnDefinitions="*,*"
+                          RowSpacing="12"
+                          ColumnSpacing="12">
+                        <Button Text="Я в безпеці"
+                                Clicked="OnSafeClicked"
+                                HeightRequest="62"
+                                CornerRadius="20"
+                                BackgroundColor="{AppThemeBinding Light=#EAF8F0, Dark=#123622}"
+                                BorderColor="{AppThemeBinding Light=#BDE9CA, Dark=#2E7C4A}"
+                                BorderWidth="1"
+                                TextColor="{AppThemeBinding Light=#24743E, Dark=#8AF0A8}"
+                                FontAttributes="Bold" />
+                        <Button Grid.Column="1"
+                                Text="Потрібна допомога"
+                                Clicked="OnNeedHelpClicked"
+                                HeightRequest="62"
+                                CornerRadius="20"
+                                BackgroundColor="{AppThemeBinding Light=#FFF0F0, Dark=#3A1519}"
+                                BorderColor="{AppThemeBinding Light=#F4B8B8, Dark=#8B343A}"
+                                BorderWidth="1"
+                                TextColor="{AppThemeBinding Light=#C73B3B, Dark=#FF9B9B}"
+                                FontAttributes="Bold" />
+                        <Button Grid.Row="1"
+                                Text="Не в корпусі"
+                                Clicked="OnAwayClicked"
+                                HeightRequest="62"
+                                CornerRadius="20"
+                                BackgroundColor="{AppThemeBinding Light=#EEF5FF, Dark=#10213A}"
+                                BorderColor="{AppThemeBinding Light=#C9DAFF, Dark=#31588B}"
+                                BorderWidth="1"
+                                TextColor="{AppThemeBinding Light=#2F67D8, Dark=#8EB9FF}"
+                                FontAttributes="Bold" />
+                        <Button Grid.Row="1"
+                                Grid.Column="1"
+                                Text="Інструкції"
+                                Clicked="OnInstructionsClicked"
+                                HeightRequest="62"
+                                CornerRadius="20"
+                                BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#101C31}"
+                                BorderColor="{AppThemeBinding Light=#D7E4FA, Dark=#28466F}"
+                                BorderWidth="1"
+                                TextColor="{AppThemeBinding Light=#38506F, Dark=#D7E6FF}"
+                                FontAttributes="Bold" />
+                    </Grid>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout x:Name="AdminPanel"
+                                     IsVisible="False"
+                                     Spacing="12">
+                    <Grid ColumnDefinitions="*,*"
+                          ColumnSpacing="12">
+                        <Border Padding="14"
+                                StrokeThickness="1"
+                                Stroke="{AppThemeBinding Light=#D7E4FA, Dark=#28466F}"
+                                BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#101C31}">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="22" />
+                            </Border.StrokeShape>
+                            <VerticalStackLayout Spacing="2">
+                                <Label x:Name="ReceivedCountLabel"
+                                       Text="0"
+                                       FontSize="30"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#2F67D8, Dark=#8EB9FF}" />
+                                <Label Text="Отримали"
+                                       FontSize="12"
+                                       TextColor="{AppThemeBinding Light=#66758F, Dark=#A8B7D3}" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Column="1"
+                                Padding="14"
+                                StrokeThickness="1"
+                                Stroke="{AppThemeBinding Light=#F4B8B8, Dark=#8B343A}"
+                                BackgroundColor="{AppThemeBinding Light=#FFF7F7, Dark=#2C1117}">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="22" />
+                            </Border.StrokeShape>
+                            <VerticalStackLayout Spacing="2">
+                                <Label x:Name="HelpCountLabel"
+                                       Text="0"
+                                       FontSize="30"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#C73B3B, Dark=#FF9B9B}" />
+                                <Label Text="Потребують допомоги"
+                                       FontSize="12"
+                                       TextColor="{AppThemeBinding Light=#66758F, Dark=#A8B7D3}" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </Grid>
+
+                    <Label Text="Панель чергового"
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=#18233A, Dark=#F5F8FF}" />
+
+                    <Button Text="Підтвердити інцидент і розіслати"
+                            Clicked="OnConfirmIncidentClicked"
+                            HeightRequest="58"
+                            CornerRadius="20"
+                            BackgroundColor="#E94040"
+                            TextColor="#FFFFFF"
+                            FontAttributes="Bold" />
+                    <Button Text="Навчальна тривога"
+                            Clicked="OnDrillClicked"
+                            HeightRequest="58"
+                            CornerRadius="20"
+                            BackgroundColor="{AppThemeBinding Light=#FFF6D8, Dark=#3B2C0C}"
+                            BorderColor="{AppThemeBinding Light=#F1D36B, Dark=#8B711F}"
+                            BorderWidth="1"
+                            TextColor="{AppThemeBinding Light=#8A6700, Dark=#FFE28A}"
+                            FontAttributes="Bold" />
+                    <Button Text="Скасувати тривогу"
+                            Clicked="OnCancelIncidentClicked"
+                            HeightRequest="58"
+                            CornerRadius="20"
+                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#101C31}"
+                            BorderColor="{AppThemeBinding Light=#D7E4FA, Dark=#28466F}"
+                            BorderWidth="1"
+                            TextColor="{AppThemeBinding Light=#38506F, Dark=#D7E6FF}"
+                            FontAttributes="Bold" />
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>
