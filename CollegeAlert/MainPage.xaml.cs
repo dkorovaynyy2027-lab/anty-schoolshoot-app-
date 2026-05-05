@@ -8,12 +8,18 @@ public partial class MainPage : ContentPage
     private int themeMode;
     private int receivedCount;
     private int helpCount;
+    private int coverage;
+    private AlertScope alertScope = AlertScope.Building;
+    private AlertVibration vibrationMode = AlertVibration.Moderate;
 
     public MainPage()
     {
         InitializeComponent();
         UpdateRoleUi();
         UpdateIncidentUi();
+        UpdateCounters();
+        UpdateScopeUi();
+        UpdateVibrationUi();
     }
 
     private async void OnAlarmPressed(object? sender, EventArgs e)
@@ -30,7 +36,7 @@ public partial class MainPage : ContentPage
         try
         {
             HoldProgress.Opacity = 0.2;
-            await AlarmButton.ScaleToAsync(0.95, 120, Easing.CubicOut);
+            await AlarmButton.ScaleToAsync(0.94, 120, Easing.CubicOut);
             Pulse(TimeSpan.FromMilliseconds(120));
 
             await Task.WhenAll(
@@ -38,7 +44,8 @@ public partial class MainPage : ContentPage
                 HoldProgress.RotateToAsync(270, 3000, Easing.Linear));
 
             token.ThrowIfCancellationRequested();
-            ActivateIncident("Сигнал надіслано", false);
+            ActivateIncident("Сигнал надіслано черговому", false);
+            AddEvent("Студент надіслав тихий сигнал тривоги");
         }
         catch (OperationCanceledException)
         {
@@ -88,22 +95,67 @@ public partial class MainPage : ContentPage
         };
     }
 
+    private void OnScopeBuildingClicked(object? sender, EventArgs e)
+    {
+        alertScope = AlertScope.Building;
+        UpdateScopeUi();
+    }
+
+    private void OnScopeCampusClicked(object? sender, EventArgs e)
+    {
+        alertScope = AlertScope.Campus;
+        UpdateScopeUi();
+    }
+
+    private void OnScopeAllClicked(object? sender, EventArgs e)
+    {
+        alertScope = AlertScope.College;
+        UpdateScopeUi();
+    }
+
+    private void OnSilentVibeClicked(object? sender, EventArgs e)
+    {
+        vibrationMode = AlertVibration.Silent;
+        UpdateVibrationUi();
+    }
+
+    private void OnModerateVibeClicked(object? sender, EventArgs e)
+    {
+        vibrationMode = AlertVibration.Moderate;
+        UpdateVibrationUi();
+    }
+
+    private void OnLoudVibeClicked(object? sender, EventArgs e)
+    {
+        vibrationMode = AlertVibration.Loud;
+        UpdateVibrationUi();
+    }
+
     private void OnConfirmIncidentClicked(object? sender, EventArgs e)
     {
-        ActivateIncident("Підтверджено адміністрацією", false);
-        receivedCount = Math.Max(receivedCount, 18);
-        helpCount = Math.Max(helpCount, 2);
+        ActivateIncident("Інцидент підтверджено і розіслано", false);
+        receivedCount = alertScope switch
+        {
+            AlertScope.Building => 42,
+            AlertScope.Campus => 96,
+            _ => 184
+        };
+        helpCount = alertScope == AlertScope.Building ? 3 : 7;
+        coverage = 68;
         UpdateCounters();
-        Pulse(TimeSpan.FromMilliseconds(900));
+        Pulse(GetVibrationDuration());
+        AddEvent($"Адміністрація підтвердила інцидент: {GetScopeText()}, {GetVibrationText()}");
     }
 
     private void OnDrillClicked(object? sender, EventArgs e)
     {
-        ActivateIncident("Навчальна тривога", true);
-        receivedCount = 12;
+        ActivateIncident("Навчальна тривога активна", true);
+        receivedCount = 28;
         helpCount = 0;
+        coverage = 35;
         UpdateCounters();
-        Pulse(TimeSpan.FromMilliseconds(350));
+        Pulse(TimeSpan.FromMilliseconds(250));
+        AddEvent($"Запущено навчальну тривогу: {GetScopeText()}");
     }
 
     private void OnCancelIncidentClicked(object? sender, EventArgs e)
@@ -111,15 +163,19 @@ public partial class MainPage : ContentPage
         incidentActive = false;
         receivedCount = 0;
         helpCount = 0;
+        coverage = 0;
         UpdateIncidentUi();
         UpdateCounters();
+        AddEvent("Тривогу скасовано відповідальною особою");
     }
 
     private async void OnSafeClicked(object? sender, EventArgs e)
     {
         receivedCount++;
+        coverage = Math.Min(100, coverage + 8);
         UpdateCounters();
-        Pulse(TimeSpan.FromMilliseconds(180));
+        Pulse(TimeSpan.FromMilliseconds(160));
+        AddEvent("Користувач позначив: я в безпеці");
         await DisplayAlertAsync("Статус надіслано", "Позначено: я в безпеці.", "OK");
     }
 
@@ -127,24 +183,38 @@ public partial class MainPage : ContentPage
     {
         receivedCount++;
         helpCount++;
+        coverage = Math.Min(100, coverage + 8);
         UpdateCounters();
         Pulse(TimeSpan.FromMilliseconds(700));
+        AddEvent("Користувач позначив: потрібна допомога");
         await DisplayAlertAsync("Статус надіслано", "Адміністрація бачить, що вам потрібна допомога.", "OK");
     }
 
     private async void OnAwayClicked(object? sender, EventArgs e)
     {
         receivedCount++;
+        coverage = Math.Min(100, coverage + 8);
         UpdateCounters();
-        Pulse(TimeSpan.FromMilliseconds(140));
+        Pulse(TimeSpan.FromMilliseconds(130));
+        AddEvent("Користувач позначив: не в цій будівлі");
         await DisplayAlertAsync("Статус надіслано", "Позначено: ви не в цьому корпусі.", "OK");
+    }
+
+    private async void OnReceivedClicked(object? sender, EventArgs e)
+    {
+        receivedCount++;
+        coverage = Math.Min(100, coverage + 6);
+        UpdateCounters();
+        Pulse(TimeSpan.FromMilliseconds(120));
+        AddEvent("Користувач підтвердив отримання повідомлення");
+        await DisplayAlertAsync("Отримано", "Підтвердження доставлено адміністрації.", "OK");
     }
 
     private async void OnInstructionsClicked(object? sender, EventArgs e)
     {
         await DisplayAlertAsync(
             "Інструкції",
-            "Залишайтеся на місці, не створюйте шуму, дійте за правилами безпеки коледжу та очікуйте подальших повідомлень.",
+            "Залишайтеся на місці, дійте за правилами безпеки коледжу, не створюйте шуму та очікуйте подальших повідомлень.",
             "OK");
     }
 
@@ -152,25 +222,35 @@ public partial class MainPage : ContentPage
     {
         incidentActive = true;
         HeaderSubtitle.Text = caption;
-        ModeTitle.Text = isDrill ? "Навчальна тривога" : "Активна тривога";
-        ModeSubtitle.Text = isDrill ? "Тренування без реальної загрози" : "Корпус Б - 3 поверх";
+        SystemTitle.Text = isDrill ? "Навчальний режим" : "Активна тривога";
+        SystemSubtitle.Text = isDrill ? "Тренування без реальної загрози" : $"{GetScopeText()} - {GetVibrationText()}";
+        LiveBadge.Text = isDrill ? "● DRILL" : "● ALERT";
+        AlertTitle.Text = isDrill ? "Навчальна тривога" : "Тихий сигнал активний";
+        AlertSubtitle.Text = isDrill ? "Перевірка маршруту оповіщення" : "Очікуйте підтвердження та не створюйте шуму";
         ModeBadge.Text = isDrill ? "DR" : "SOS";
-        PrimaryStatusLabel.Text = isDrill ? "Тренувальне оповіщення активне" : "Тихе сповіщення активне";
-        SecondaryStatusLabel.Text = "Відкрийте статус або очікуйте подальших повідомлень";
-        AlarmButton.Text = isDrill ? "НАВЧАЛЬНА\nТРИВОГА" : "СИГНАЛ\nНАДІСЛАНО";
-        AlarmButton.BackgroundColor = isDrill ? Color.FromArgb("#C89618") : Color.FromArgb("#B73535");
+        InstructionEmoji.Text = isDrill ? "🧪" : "🤫";
+        PrimaryStatusLabel.Text = isDrill ? "Тренувальне оповіщення активне" : "Беззвучне сповіщення активне";
+        SecondaryStatusLabel.Text = isDrill ? "Дані потрапляють у навчальний журнал" : "Вкажіть статус або очікуйте подальших повідомлень";
+        AlarmButton.Text = isDrill ? "🧪\nНАВЧАЛЬНА\nТРИВОГА" : "🚨\nСИГНАЛ\nНАДІСЛАНО";
+        AlarmButton.BackgroundColor = isDrill ? Color.FromArgb("#C99318") : Color.FromArgb("#B73535");
+        HoldProgress.Opacity = 0;
+        HoldProgress.Rotation = -90;
     }
 
     private void UpdateIncidentUi()
     {
-        HeaderSubtitle.Text = "Немає активних тривог";
-        ModeTitle.Text = "Режим спостереження";
-        ModeSubtitle.Text = "Корпус Б - 3 поверх";
+        HeaderSubtitle.Text = "Коледж онлайн - тихий режим";
+        SystemTitle.Text = "Система готова";
+        SystemSubtitle.Text = "Остання перевірка: щойно";
+        LiveBadge.Text = "● LIVE";
+        AlertTitle.Text = "Тихе сповіщення";
+        AlertSubtitle.Text = "Утримуйте кнопку, щоб передати сигнал черговому";
         ModeBadge.Text = "OK";
-        PrimaryStatusLabel.Text = "Зараз активних тривог немає";
-        SecondaryStatusLabel.Text = "Система готова до тихого екстреного сповіщення";
-        AlarmButton.Text = "ТРИВОГА\nУтримуйте 3 секунди";
-        AlarmButton.BackgroundColor = Color.FromArgb("#E94040");
+        InstructionEmoji.Text = "✅";
+        PrimaryStatusLabel.Text = "Активних тривог немає";
+        SecondaryStatusLabel.Text = "Система працює разом з офіційними процедурами безпеки";
+        AlarmButton.Text = "🚨\nТРИВОГА\nутримуйте 3 с";
+        AlarmButton.BackgroundColor = Color.FromArgb("#E93D3D");
         HoldProgress.Opacity = 0;
         HoldProgress.Rotation = -90;
     }
@@ -180,18 +260,52 @@ public partial class MainPage : ContentPage
         StudentPanel.IsVisible = !adminMode;
         AdminPanel.IsVisible = adminMode;
 
-        StudentRoleButton.BackgroundColor = adminMode ? Colors.Transparent : Color.FromArgb("#2F67D8");
+        StudentRoleButton.BackgroundColor = adminMode ? Colors.Transparent : Color.FromArgb("#2467DE");
         StudentRoleButton.TextColor = adminMode ? Color.FromArgb("#7A8AA5") : Colors.White;
-        AdminRoleButton.BackgroundColor = adminMode ? Color.FromArgb("#2F67D8") : Colors.Transparent;
+        AdminRoleButton.BackgroundColor = adminMode ? Color.FromArgb("#2467DE") : Colors.Transparent;
         AdminRoleButton.TextColor = adminMode ? Colors.White : Color.FromArgb("#7A8AA5");
 
-        ModeSubtitle.Text = adminMode ? "Панель підтвердження та розсилки" : "Корпус Б - 3 поверх";
+        if (!incidentActive)
+        {
+            AlertSubtitle.Text = adminMode
+                ? "Оберіть аудиторію, режим сповіщення та підтвердіть інцидент"
+                : "Утримуйте кнопку, щоб передати сигнал черговому";
+        }
     }
 
     private void UpdateCounters()
     {
         ReceivedCountLabel.Text = receivedCount.ToString();
         HelpCountLabel.Text = helpCount.ToString();
+        CoverageCountLabel.Text = $"{coverage}%";
+    }
+
+    private void UpdateScopeUi()
+    {
+        SetSegment(ScopeBuildingButton, alertScope == AlertScope.Building);
+        SetSegment(ScopeCampusButton, alertScope == AlertScope.Campus);
+        SetSegment(ScopeAllButton, alertScope == AlertScope.College);
+    }
+
+    private void UpdateVibrationUi()
+    {
+        SetSegment(VibeSilentButton, vibrationMode == AlertVibration.Silent);
+        SetSegment(VibeModerateButton, vibrationMode == AlertVibration.Moderate);
+        SetSegment(VibeLoudButton, vibrationMode == AlertVibration.Loud);
+        VibrationChip.Text = vibrationMode switch
+        {
+            AlertVibration.Silent => "🔕 Тихо",
+            AlertVibration.Loud => "🔊 Гучно",
+            _ => "📳 Помірна"
+        };
+    }
+
+    private static void SetSegment(Button button, bool selected)
+    {
+        button.BackgroundColor = selected ? Color.FromArgb("#2467DE") : Colors.Transparent;
+        button.TextColor = selected ? Colors.White : Color.FromArgb("#7A8AA5");
+        button.BorderColor = selected ? Color.FromArgb("#2467DE") : Color.FromArgb("#AFC4E6");
+        button.BorderWidth = selected ? 0 : 1;
     }
 
     private async Task ResetHoldVisuals()
@@ -202,11 +316,51 @@ public partial class MainPage : ContentPage
         HoldProgress.Rotation = -90;
     }
 
+    private void AddEvent(string text)
+    {
+        EventLogLabel.Text = $"{DateTime.Now:HH:mm}  {text}\n{EventLogLabel.Text}";
+    }
+
+    private TimeSpan GetVibrationDuration() => vibrationMode switch
+    {
+        AlertVibration.Silent => TimeSpan.Zero,
+        AlertVibration.Loud => TimeSpan.FromMilliseconds(1000),
+        _ => TimeSpan.FromMilliseconds(450)
+    };
+
+    private string GetScopeText() => alertScope switch
+    {
+        AlertScope.Campus => "Територія коледжу",
+        AlertScope.College => "Весь коледж",
+        _ => "Корпус Б"
+    };
+
+    private string GetVibrationText() => vibrationMode switch
+    {
+        AlertVibration.Silent => "повністю беззвучно",
+        AlertVibration.Loud => "гучний режим",
+        _ => "помірна вібрація"
+    };
+
     private static void Pulse(TimeSpan duration)
     {
-        if (Vibration.Default.IsSupported)
+        if (duration > TimeSpan.Zero && Vibration.Default.IsSupported)
         {
             Vibration.Default.Vibrate(duration);
         }
+    }
+
+    private enum AlertScope
+    {
+        Building,
+        Campus,
+        College
+    }
+
+    private enum AlertVibration
+    {
+        Silent,
+        Moderate,
+        Loud
     }
 }
