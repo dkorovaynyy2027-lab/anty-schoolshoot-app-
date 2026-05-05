@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CollegeAlert.AdminPage"
+             BackgroundColor="#F8FAFC"
+             Shell.NavBarIsVisible="False">
+
+    <Grid>
+        <!-- Login Form -->
+        <Border x:Name="LoginView" IsVisible="True" BackgroundColor="White" Padding="40" StrokeShape="RoundRectangle 32" Margin="30" VerticalOptions="Center" StrokeThickness="0">
+            <Border.Shadow><Shadow Brush="Black" Offset="0,10" Radius="30" Opacity="0.1"/></Border.Shadow>
+            <VerticalStackLayout Spacing="30">
+                <Image Source="shield_icon.png" WidthRequest="60" HeightRequest="60" HorizontalOptions="Center"/>
+                <Label Text="Admin Access" FontSize="24" FontAttributes="Bold" HorizontalTextAlignment="Center" FontFamily="OpenSansBold"/>
+                <VerticalStackLayout Spacing="15">
+                    <Entry x:Name="LoginEntry" Placeholder="Username" HeightRequest="56"/>
+                    <Entry x:Name="PasswordEntry" Placeholder="Password" IsPassword="True" HeightRequest="56"/>
+                </VerticalStackLayout>
+                <Button Text="LOGIN" BackgroundColor="{StaticResource AppAccent}" TextColor="White" CornerRadius="28" HeightRequest="56" FontAttributes="Bold" Clicked="OnLoginClicked"/>
+            </VerticalStackLayout>
+        </Border>
+
+        <!-- Admin Content -->
+        <Grid x:Name="AdminContentView" IsVisible="False" RowDefinitions="Auto,Auto,*,Auto" Padding="20,50,20,20">
+            
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,20">
+                <VerticalStackLayout Grid.Column="0" Spacing="2">
+                    <Label Text="Центр керування" FontSize="22" FontAttributes="Bold" TextColor="#1E293B" FontFamily="OpenSansBold"/>
+                    <Label Text="Статус системи: Активна" FontSize="12" TextColor="{StaticResource AppSuccess}"/>
+                </VerticalStackLayout>
+                <Button Grid.Column="1" Text="Вихід" BackgroundColor="Transparent" TextColor="#64748B" Clicked="OnLogoutClicked"/>
+            </Grid>
+
+            <!-- Tabs -->
+            <Border Grid.Row="1" StrokeShape="RoundRectangle 16" BackgroundColor="#E2E8F0" Padding="4" StrokeThickness="0" Margin="0,0,0,20">
+                <Grid ColumnDefinitions="*,*">
+                    <Button x:Name="TabStats" Grid.Column="0" Text="Статистика" BackgroundColor="White" TextColor="#1E293B" CornerRadius="12" HeightRequest="40" FontAttributes="Bold" Clicked="OnTabStatsClicked"/>
+                    <Button x:Name="TabAlerts" Grid.Column="1" Text="Сигнали" BackgroundColor="Transparent" TextColor="#64748B" CornerRadius="12" HeightRequest="40" FontAttributes="Bold" Clicked="OnTabAlertsClicked"/>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Row="2">
+                <!-- Stats Container -->
+                <Grid x:Name="StatsContainer" IsVisible="True" RowDefinitions="Auto, *">
+                    <Grid Grid.Row="0" ColumnDefinitions="*,*,*" ColumnSpacing="10" Margin="0,0,0,15">
+                        <Border Grid.Column="0" BackgroundColor="White" Padding="12" StrokeShape="RoundRectangle 20" StrokeThickness="0">
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="БЕЗПЕКА" FontSize="9" TextColor="#64748B" FontAttributes="Bold" HorizontalOptions="Center"/>
+                                <Label x:Name="SafeCountLbl" Text="0" FontSize="24" FontAttributes="Bold" TextColor="{StaticResource AppSuccess}" HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Column="1" BackgroundColor="White" Padding="12" StrokeShape="RoundRectangle 20" StrokeThickness="0">
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="SOS" FontSize="9" TextColor="#64748B" FontAttributes="Bold" HorizontalOptions="Center"/>
+                                <Label x:Name="DangerCountLbl" Text="0" FontSize="24" FontAttributes="Bold" TextColor="{StaticResource AppDanger}" HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Column="2" BackgroundColor="White" Padding="12" StrokeShape="RoundRectangle 20" StrokeThickness="0">
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="ПОЗА КОРП." FontSize="9" TextColor="#64748B" FontAttributes="Bold" HorizontalOptions="Center"/>
+                                <Label x:Name="AwayCountLbl" Text="0" FontSize="24" FontAttributes="Bold" TextColor="#0369A1" HorizontalOptions="Center"/>
+                            </VerticalStackLayout>
+                        </Border>
+                    </Grid>
+                    <!-- Empty state illustration or extra info for Stats Tab -->
+                    <Border Grid.Row="1" BackgroundColor="White" Padding="20" StrokeShape="RoundRectangle 20" StrokeThickness="0">
+                        <VerticalStackLayout Spacing="10" HorizontalOptions="Center" VerticalOptions="Center">
+                            <Image Source="shield_icon.png" WidthRequest="40" HeightRequest="40" Opacity="0.5" HorizontalOptions="Center"/>
+                            <Label Text="Система активна" FontSize="16" FontAttributes="Bold" TextColor="#1E293B" HorizontalOptions="Center"/>
+                            <Label Text="Оновлення даних відбувається у реальному часі" FontSize="12" TextColor="#64748B" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+
+                <!-- Alerts Container -->
+                <Grid x:Name="AlertsContainer" IsVisible="False" RowDefinitions="Auto,*">
+                    <Label Grid.Row="0" Text="Останні сигнали" FontSize="16" FontAttributes="Bold" TextColor="#1E293B" Margin="5,0,0,15"/>
+                    <CollectionView Grid.Row="1" x:Name="SignalsList" EmptyView="Очікування сигналів...">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="0,0,0,12" Padding="16" StrokeShape="RoundRectangle 20" BackgroundColor="White" StrokeThickness="0">
+                                    <Grid ColumnDefinitions="Auto,*,Auto">
+                                        <Border Grid.Column="0" BackgroundColor="#FEF2F2" StrokeShape="RoundRectangle 12" WidthRequest="44" HeightRequest="44" Margin="0,0,15,0">
+                                            <Image Source="warning_icon.png" WidthRequest="20" HeightRequest="20" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                        </Border>
+                                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                            <Label Text="{Binding Building}" FontAttributes="Bold" TextColor="#1E293B"/>
+                                            <Label Text="{Binding Floor}" FontSize="12" TextColor="#64748B"/>
+                                        </VerticalStackLayout>
+                                        <Label Grid.Column="2" Text="ЩОЙНО" FontSize="10" TextColor="#94A3B8" VerticalOptions="Center"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </Grid>
+            </Grid>
+
+            <VerticalStackLayout Grid.Row="3" Spacing="12" Margin="0,10,0,0">
+                <Button Text="ОГОЛОСИТИ ТРИВОГУ" BackgroundColor="{StaticResource AppDanger}" TextColor="White" HeightRequest="60" CornerRadius="30" FontAttributes="Bold" Clicked="OnConfirmIncident"/>
+                <Button Text="ВІДБІЙ ТРИВОГИ" BackgroundColor="#22C55E" TextColor="White" HeightRequest="50" CornerRadius="25" FontAttributes="Bold" Clicked="OnEndAlertClicked"/>
+            </VerticalStackLayout>
+        </Grid>
+    </Grid>
+</ContentPage>

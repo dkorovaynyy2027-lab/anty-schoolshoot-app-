@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CollegeAlert.ActiveAlertPage"
+             BackgroundColor="#F8FAFC"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        
+        <!-- Red Alert Banner -->
+        <Border Grid.Row="0" Margin="20,50,20,10" Padding="20" BackgroundColor="#FEF2F2" Stroke="#FCA5A5" StrokeThickness="1" StrokeShape="RoundRectangle 24">
+            <Grid ColumnDefinitions="Auto,*">
+                <Border Grid.Column="0" BackgroundColor="#EF4444" WidthRequest="48" HeightRequest="48" StrokeShape="RoundRectangle 12" Margin="0,0,15,0">
+                    <Image Source="warning_icon.png" WidthRequest="24" HeightRequest="24" HorizontalOptions="Center" VerticalOptions="Center"/>
+                </Border>
+                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                    <Label Text="Активна тривога" FontSize="18" FontAttributes="Bold" TextColor="#B91C1C" FontFamily="OpenSansBold"/>
+                    <Label x:Name="LocationLabel" Text="Отримання локації..." FontSize="13" TextColor="#EF4444"/>
+                </VerticalStackLayout>
+            </Grid>
+        </Border>
+
+        <!-- Status Selection Section -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="20" Padding="20,10">
+                <Label Text="Повідомте про свій статус" FontSize="16" FontAttributes="Bold" TextColor="#475569" Margin="5,0"/>
+                
+                <!-- Status Cards -->
+                <Grid ColumnDefinitions="*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="12">
+                    
+                    <!-- Я в безпеці (Green) -->
+                    <Border Grid.Row="0" StrokeShape="RoundRectangle 24" BackgroundColor="#F0FDF4" StrokeThickness="0" Padding="20">
+                        <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnSafeClicked"/></Border.GestureRecognizers>
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <Image Source="check_icon.png" WidthRequest="24" HeightRequest="24" Margin="0,0,15,0"/>
+                            <Label Grid.Column="1" Text="Я в безпеці" FontSize="16" FontAttributes="Bold" TextColor="#166534" VerticalOptions="Center"/>
+                            <Image Grid.Column="2" Source="info_icon.png" Opacity="0.3" WidthRequest="20"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Потрібна допомога (Red) -->
+                    <Border Grid.Row="1" StrokeShape="RoundRectangle 24" BackgroundColor="#FEF2F2" StrokeThickness="0" Padding="20">
+                        <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnDangerClicked"/></Border.GestureRecognizers>
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <Image Source="warning_icon.png" WidthRequest="24" HeightRequest="24" Margin="0,0,15,0"/>
+                            <Label Grid.Column="1" Text="Потрібна допомога" FontSize="16" FontAttributes="Bold" TextColor="#991B1B" VerticalOptions="Center"/>
+                            <Image Grid.Column="2" Source="info_icon.png" Opacity="0.3" WidthRequest="20"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Я не в цьому корпусі (Blue) -->
+                    <Border Grid.Row="2" StrokeShape="RoundRectangle 24" BackgroundColor="#F0F9FF" StrokeThickness="0" Padding="20">
+                        <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnAwayClicked"/></Border.GestureRecognizers>
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <Image Source="location_icon.png" WidthRequest="24" HeightRequest="24" Margin="0,0,15,0"/>
+                            <Label Grid.Column="1" Text="Я не в цьому корпусі" FontSize="16" FontAttributes="Bold" TextColor="#075985" VerticalOptions="Center"/>
+                            <Image Grid.Column="2" Source="info_icon.png" Opacity="0.3" WidthRequest="20"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Переглянути інструкції (Dark) -->
+                    <Border Grid.Row="3" StrokeShape="RoundRectangle 24" BackgroundColor="#1E293B" StrokeThickness="0" Padding="20">
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <Image Source="shield_icon.png" WidthRequest="24" HeightRequest="24" Margin="0,0,15,0"/>
+                            <Label Grid.Column="1" Text="Переглянути інструкції" FontSize="16" FontAttributes="Bold" TextColor="White" VerticalOptions="Center"/>
+                        </Grid>
+                    </Border>
+
+                </Grid>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Bottom Link -->
+        <Button Grid.Row="2" Text="Скасувати тривогу (тільки адмін)" TextColor="#94A3B8" BackgroundColor="Transparent" FontSize="12" Margin="0,0,0,20" Clicked="OnBackClicked"/>
+
+    </Grid>
+</ContentPage>

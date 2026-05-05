@@ -4,11 +4,18 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:CollegeAlert"
-    Title="CollegeAlert">
+    Shell.FlyoutBehavior="Disabled"
+    Shell.NavBarIsVisible="False">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <!-- Тільки ці два елементи існують у структурі Shell при запуску -->
+    <TabBar>
+        <Tab Title="Головна" Icon="shield_icon.png">
+            <ShellContent ContentTemplate="{DataTemplate local:MainPage}" Route="MainPage" />
+        </Tab>
+
+        <Tab Title="Адмін" Icon="sos_icon.png">
+            <ShellContent ContentTemplate="{DataTemplate local:AdminPage}" Route="AdminPage" />
+        </Tab>
+    </TabBar>
 
 </Shell>

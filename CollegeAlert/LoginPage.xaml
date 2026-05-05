@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CollegeAlert.LoginPage"
+             BackgroundColor="{StaticResource AppBackground}"
+             Shell.NavBarIsVisible="False">
+
+    <VerticalStackLayout Padding="30" Spacing="25" VerticalOptions="Center">
+        
+        <Image Source="shield_icon.png" WidthRequest="80" HeightRequest="80" HorizontalOptions="Center"/>
+        
+        <VerticalStackLayout Spacing="5" HorizontalOptions="Center">
+            <Label Text="Вхід для персоналу" FontSize="24" FontAttributes="Bold" HorizontalTextAlignment="Center" FontFamily="OpenSansBold"/>
+            <Label Text="Введіть дані для доступу до адмін-панелі" FontSize="14" TextColor="{StaticResource AppTextSecondary}" HorizontalTextAlignment="Center" FontFamily="OpenSans"/>
+        </VerticalStackLayout>
+
+        <VerticalStackLayout Spacing="15">
+            <Entry x:Name="LoginEntry" Placeholder="Логін" Keyboard="Text" HeightRequest="50"/>
+            <Entry x:Name="PasswordEntry" Placeholder="Пароль" IsPassword="True" HeightRequest="50"/>
+            
+            <Button Text="УВІЙТИ" 
+                    BackgroundColor="{StaticResource AppAccent}" 
+                    TextColor="White" 
+                    HeightRequest="56"
+                    FontAttributes="Bold"
+                    Clicked="OnLoginClicked"/>
+        </VerticalStackLayout>
+
+        <Button Text="Скасувати" BackgroundColor="Transparent" TextColor="{StaticResource AppTextSecondary}" Clicked="OnCancelClicked"/>
+
+    </VerticalStackLayout>
+</ContentPage>
